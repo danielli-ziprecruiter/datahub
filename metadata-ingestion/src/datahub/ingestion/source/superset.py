@@ -71,6 +71,10 @@ class SupersetConfig(ConfigModel):
         default={},
         description="Can be used to change mapping for database names in superset to what you have in datahub",
     )
+    platform_mapping: Dict[str, str] = Field(
+        default={},
+        description="Can be used to change mapping for platforms in superset to what you have in datahub",
+    )
 
     @validator("connect_uri")
     def remove_trailing_slash(cls, v):
@@ -181,6 +185,7 @@ class SupersetSource(Source):
 
         if database_id and table_name:
             platform = self.get_platform_from_database_id(database_id)
+            platform = self.config.platform_mapping.get(platform, platform)
             platform_urn = f"urn:li:dataPlatform:{platform}"
             dataset_urn = (
                 f"urn:li:dataset:("
