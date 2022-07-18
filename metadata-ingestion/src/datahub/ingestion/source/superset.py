@@ -59,6 +59,7 @@ class SupersetConfig(ConfigModel):
     # See the Superset /security/login endpoint for details
     # https://superset.apache.org/docs/rest-api
     connect_uri: str = Field(default="localhost:8088", description="Superset host URL.")
+    link_url: str = Field(default=connect_uri, description="Link to view in Superset")
     username: Optional[str] = Field(default=None, description="Superset username.")
     password: Optional[str] = Field(default=None, description="Superset password.")
     provider: str = Field(default="db", description="Superset provider.")
@@ -70,10 +71,6 @@ class SupersetConfig(ConfigModel):
     database_alias: Dict[str, str] = Field(
         default={},
         description="Can be used to change mapping for database names in superset to what you have in datahub",
-    )
-    platform_mapping: Dict[str, str] = Field(
-        default={},
-        description="Can be used to change mapping for platforms in superset to what you have in datahub",
     )
 
     @validator("connect_uri")
@@ -185,7 +182,6 @@ class SupersetSource(Source):
 
         if database_id and table_name:
             platform = self.get_platform_from_database_id(database_id)
-            platform = self.config.platform_mapping.get(platform, platform)
             platform_urn = f"urn:li:dataPlatform:{platform}"
             dataset_urn = (
                 f"urn:li:dataset:("
@@ -215,7 +211,7 @@ class SupersetSource(Source):
             created=AuditStamp(time=modified_ts, actor=modified_actor),
             lastModified=AuditStamp(time=modified_ts, actor=modified_actor),
         )
-        dashboard_url = f"{self.config.connect_uri}{dashboard_data.get('url', '')}"
+        dashboard_url = f"{self.config.link_url}{dashboard_data.get('url', '')}"
 
         chart_urns = []
         raw_position_data = dashboard_data.get("position_json", "{}")
@@ -287,7 +283,7 @@ class SupersetSource(Source):
             lastModified=AuditStamp(time=modified_ts, actor=modified_actor),
         )
         chart_type = chart_type_from_viz_type.get(chart_data.get("viz_type", ""))
-        chart_url = f"{self.config.connect_uri}{chart_data.get('url', '')}"
+        chart_url = f"{self.config.link_url}{chart_data.get('url', '')}"
 
         datasource_id = chart_data.get("datasource_id")
         datasource_urn = self.get_datasource_urn_from_id(datasource_id)
