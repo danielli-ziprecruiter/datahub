@@ -17,9 +17,7 @@ import {
     Ownership,
     OwnershipUpdate,
     SchemaMetadata,
-    StringMapEntry,
     EntityLineageResult,
-    Domain,
     SubTypes,
     Container,
     Health,
@@ -30,6 +28,8 @@ import {
     EntityRelationshipsResult,
     ParentNodesResult,
     SiblingProperties,
+    CustomPropertiesEntry,
+    DomainAssociation,
 } from '../../../types.generated';
 import { FetchedEntity } from '../../lineage/types';
 
@@ -57,14 +57,16 @@ export type GenericEntityProperties = {
     properties?: Maybe<{
         description?: Maybe<string>;
         qualifiedName?: Maybe<string>;
+        sourceUrl?: Maybe<string>;
+        sourceRef?: Maybe<string>;
     }>;
     globalTags?: Maybe<GlobalTags>;
     glossaryTerms?: Maybe<GlossaryTerms>;
     ownership?: Maybe<Ownership>;
-    domain?: Maybe<Domain>;
+    domain?: Maybe<DomainAssociation>;
     platform?: Maybe<DataPlatform>;
     dataPlatformInstance?: Maybe<DataPlatformInstance>;
-    customProperties?: Maybe<StringMapEntry[]>;
+    customProperties?: Maybe<CustomPropertiesEntry[]>;
     institutionalMemory?: Maybe<InstitutionalMemory>;
     schemaMetadata?: Maybe<SchemaMetadata>;
     externalUrl?: Maybe<string>;
@@ -114,6 +116,7 @@ export type UpdateEntityType<U> = (
 export type EntityContextType = {
     urn: string;
     entityType: EntityType;
+    dataNotCombinedWithSiblings: any;
     entityData: GenericEntityProperties | null;
     baseEntity: any;
     updateEntity?: UpdateEntityType<any> | null;

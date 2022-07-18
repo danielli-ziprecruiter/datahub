@@ -27,6 +27,7 @@ import { SidebarDomainSection } from '../shared/containers/profile/sidebar/Domai
 import { ValidationsTab } from '../shared/tabs/Dataset/Validations/ValidationsTab';
 import { OperationsTab } from './profile/OperationsTab';
 import { EntityMenuItems } from '../shared/EntityDropdown/EntityDropdown';
+import { SidebarSiblingsSection } from '../shared/containers/profile/sidebar/SidebarSiblingsSection';
 
 const SUBTYPES = {
     VIEW: 'view',
@@ -175,6 +176,13 @@ export class DatasetEntity implements Entity<Dataset> {
                     component: SidebarAboutSection,
                 },
                 {
+                    component: SidebarSiblingsSection,
+                    display: {
+                        visible: (_, dataset: GetDatasetQuery) =>
+                            (dataset?.dataset?.siblings?.siblings?.length || 0) > 0,
+                    },
+                },
+                {
                     component: SidebarViewDefinitionSection,
                     display: {
                         visible: (_, dataset: GetDatasetQuery) =>
@@ -241,7 +249,7 @@ export class DatasetEntity implements Entity<Dataset> {
                 owners={data.ownership?.owners}
                 globalTags={data.globalTags}
                 glossaryTerms={data.glossaryTerms}
-                domain={data.domain}
+                domain={data.domain?.domain}
                 container={data.container}
             />
         );
@@ -265,7 +273,8 @@ export class DatasetEntity implements Entity<Dataset> {
                 platformLogos={genericProperties?.siblingPlatforms?.map((platform) => platform.properties?.logoUrl)}
                 owners={data.ownership?.owners}
                 globalTags={data.globalTags}
-                domain={data.domain}
+                domain={data.domain?.domain}
+                deprecation={data.deprecation}
                 glossaryTerms={data.glossaryTerms}
                 subtype={data.subTypes?.typeNames?.[0]}
                 container={data.container}
@@ -281,6 +290,12 @@ export class DatasetEntity implements Entity<Dataset> {
                     )
                 }
                 insights={result.insights}
+                externalUrl={data.properties?.externalUrl}
+                statsSummary={data.statsSummary}
+                rowCount={(data as any).lastProfile?.length && (data as any).lastProfile[0].rowCount}
+                lastUpdatedMs={
+                    (data as any).lastOperation?.length && (data as any).lastOperation[0].lastUpdatedTimestamp
+                }
             />
         );
     };
@@ -298,7 +313,7 @@ export class DatasetEntity implements Entity<Dataset> {
     };
 
     displayName = (data: Dataset) => {
-        return data?.properties?.name || data.name;
+        return data?.properties?.name || data.name || data.urn;
     };
 
     platformLogoUrl = (data: Dataset) => {
