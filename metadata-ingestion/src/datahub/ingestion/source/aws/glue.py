@@ -1,3 +1,4 @@
+import json
 import logging
 from collections import defaultdict
 from dataclasses import dataclass, field as dataclass_field
@@ -14,6 +15,7 @@ from typing import (
     Tuple,
     Union,
 )
+import re
 from urllib.parse import urlparse
 
 import botocore.exceptions
@@ -30,6 +32,7 @@ from datahub.emitter.mce_builder import (
     make_dataset_urn_with_platform_instance,
     make_domain_urn,
     make_tag_urn,
+    make_dataset_urn,
 )
 from datahub.emitter.mcp import MetadataChangeProposalWrapper
 from datahub.emitter.mcp_builder import (
@@ -98,6 +101,7 @@ from datahub.metadata.schema_classes import (
     TagAssociationClass,
     UpstreamClass,
     UpstreamLineageClass,
+    SchemaMetadataClass,
 )
 from datahub.utilities.hive_schema_to_avro import get_schema_fields_for_hive_column
 
@@ -1115,6 +1119,16 @@ class GlueSource(StatefulIngestionSourceBase):
     ) -> MetadataChangeEvent:
         def get_owner() -> Optional[OwnershipClass]:
             owner = table.get("Owner")
+            current_dataset_urn = make_dataset_urn(platform=self.platform, name=table_name, env="DEV")
+            current_dataset_ownership = self.ctx.graph.get_aspect_v2(
+                entity_urn=current_dataset_urn,
+                aspect="ownership",
+                aspect_type=OwnershipClass,
+            )
+            if current_dataset_ownership and current_dataset_ownership.owners:
+                return OwnershipClass(
+                    owners=current_dataset_ownership.owners,
+                )
             if owner:
                 owners = [
                     OwnerClass(
@@ -1128,15 +1142,34 @@ class GlueSource(StatefulIngestionSourceBase):
             return None
 
         def get_dataset_properties() -> DatasetPropertiesClass:
+            description = table.get("Description")
+            current_custom_properties = {}
+            current_dataset_urn = make_dataset_urn(platform=self.platform, name=table_name, env="DEV")
+            current_dataset_properties = self.ctx.graph.get_aspect_v2(
+                entity_urn=current_dataset_urn,
+                aspect="datasetProperties",
+                aspect_type=DatasetPropertiesClass,
+            )
+            if current_dataset_properties:
+                description = current_dataset_properties.description
+                current_custom_properties = current_dataset_properties.customProperties if current_dataset_properties.customProperties else {}
+
+            glue_properties = {
+                **table.get("Parameters", {}),
+                **{
+                    k: str(v)
+                    for k, v in table.get("StorageDescriptor", {}).items()
+                    if k not in ["Columns", "Parameters"]
+                },
+            }
             return DatasetPropertiesClass(
-                description=table.get("Description"),
+                description=description,
                 customProperties={
-                    **table.get("Parameters", {}),
+                    **{'glue_properties': json.dumps(glue_properties)},
                     **{
                         k: str(v)
-                        for k, v in table.get("StorageDescriptor", {}).items()
-                        if k not in ["Columns", "Parameters"]
-                    },
+                        for k, v in current_custom_properties.items()
+                    }
                 },
                 uri=table.get("Location"),
                 tags=[],
@@ -1214,12 +1247,41 @@ class GlueSource(StatefulIngestionSourceBase):
             )
             return new_tags
 
+        def get_field_name(field_path):
+            field_path_array = re.split("(?<=[^0-9])\\.(?=[^0-9])", field_path)
+            field_path_elements_without_type = []
+            for field_element in field_path_array:
+                if not field_element.startswith("["):
+                    field_path_elements_without_type.append(field_element)
+            return str.join(".", field_path_elements_without_type)
+
+        def get_current_field_description_and_terms_and_tags_map():
+            current_dataset_urn = make_dataset_urn(platform=self.platform, name=table_name, env=self.env)
+            current_schema_metadata = self.ctx.graph.get_aspect_v2(
+                entity_urn=current_dataset_urn,
+                aspect="schemaMetadata",
+                aspect_type=SchemaMetadataClass,
+            )
+            if not current_schema_metadata:
+                return None, None, None
+            field_description_map = dict()
+            field_glossary_terms_map = dict()
+            field_global_tags_map = dict()
+            fields = current_schema_metadata.fields
+            for field in fields:
+                field_name = get_field_name(field.fieldPath)
+                field_description_map[field_name] = field.description
+                field_glossary_terms_map[field_name] = field.glossaryTerms
+                field_global_tags_map[field_name] = field.globalTags
+            return field_description_map, field_glossary_terms_map, field_global_tags_map
+
         def get_schema_metadata() -> Optional[SchemaMetadata]:
             if not table.get("StorageDescriptor"):
                 return None
 
             schema = table["StorageDescriptor"]["Columns"]
             fields: List[SchemaField] = []
+            field_description_map, field_glossary_terms_map, field_global_tags_map = get_current_field_description_and_terms_and_tags_map()
             for field in schema:
                 schema_fields = get_schema_fields_for_hive_column(
                     hive_column_name=field["Name"],
@@ -1239,6 +1301,15 @@ class GlueSource(StatefulIngestionSourceBase):
                 )
                 assert schema_fields
                 fields.extend(schema_fields)
+
+            for field in fields:
+                field_name = get_field_name(field.fieldPath)
+                if field_description_map and field_name in field_description_map:
+                    field.description = field_description_map[field_name]
+                if field_glossary_terms_map and field_name in field_glossary_terms_map:
+                    field.glossaryTerms = field_glossary_terms_map[field_name]
+                if field_global_tags_map and field_name in field_global_tags_map:
+                    field.globalTags = field_global_tags_map[field_name]
 
             return SchemaMetadata(
                 schemaName=table_name,
