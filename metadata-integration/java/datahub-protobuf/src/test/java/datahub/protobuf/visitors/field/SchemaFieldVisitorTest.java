@@ -26,7 +26,7 @@ public class SchemaFieldVisitorTest {
         List<SchemaField> expected = Stream.of(
                 Pair.of(
                         new SchemaField()
-                                .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field")
+                                .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field")
                                 .setNullable(true)
                                 .setDescription("one of field comment")
                                 .setNativeDataType("oneof")
@@ -34,7 +34,7 @@ public class SchemaFieldVisitorTest {
                         1),
                 Pair.of(
                         new SchemaField()
-                                .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field.[type=string].one_of_string")
+                                .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field.[type=string].one_of_string")
                                 .setNullable(true)
                                 .setDescription("one of string comment")
                                 .setNativeDataType("string")
@@ -42,7 +42,7 @@ public class SchemaFieldVisitorTest {
                         1),
                 Pair.of(
                         new SchemaField()
-                                .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field.[type=int].one_of_int")
+                                .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field.[type=int].one_of_int")
                                 .setNullable(true)
                                 .setDescription("one of int comment")
                                 .setNativeDataType("int32")
@@ -50,7 +50,7 @@ public class SchemaFieldVisitorTest {
                         2),
                 Pair.of(
                         new SchemaField()
-                                .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=string].normal")
+                                .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=string].normal")
                                 .setNullable(true)
                                 .setDescription("")
                                 .setNativeDataType("string")
@@ -59,8 +59,8 @@ public class SchemaFieldVisitorTest {
         ).map(Pair::getFirst).collect(Collectors.toList());
 
         SchemaFieldVisitor test = new SchemaFieldVisitor();
-        assertEquals(expected, getTestProtobufGraph("protobuf", "messageC")
-                .accept(getVisitContextBuilder("protobuf.MessageC"), List.of(test))
+        assertEquals(expected, getTestProtobufGraph("extended_protobuf", "messageC")
+                .accept(getVisitContextBuilder("extended_protobuf.MessageC"), List.of(test))
                 .sorted(ProtobufDataset.COMPARE_BY_ROOT_MESSAGE_FIELD_WEIGHT.thenComparing(ProtobufDataset.COMPARE_BY_FIELD_PATH))
                 .map(Pair::getFirst)
                 .collect(Collectors.toList()));

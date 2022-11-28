@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Arrays;
 
 import static datahub.protobuf.TestFixtures.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,10 +63,10 @@ public class ProtobufDatasetTest {
     }
 
     @Test
-    public void messageA() throws IOException {
-        ProtobufDataset test = getTestProtobufDataset("protobuf", "messageA");
+    public void messageD() throws IOException {
+        ProtobufDataset test = getTestProtobufDataset("extended_protobuf", "messageD");
 
-        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,protobuf.MessageA,TEST)",
+        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,extended_protobuf.MessageD,TEST)",
                 test.getDatasetUrn().toString());
 
         SchemaMetadata testMetadata = test.getSchemaMetadata();
@@ -73,8 +74,8 @@ public class ProtobufDatasetTest {
         assertEquals(1, testMetadata.getVersion());
         assertEquals(9, testMetadata.getFields().size());
 
-        assertEquals("MessageA", extractAspect(test.getDatasetMCPs().get(0), "name"));
-        assertEquals("protobuf.MessageA", extractAspect(test.getDatasetMCPs().get(0), "qualifiedName"));
+        assertEquals("MessageD", extractAspect(test.getDatasetMCPs().get(0), "name"));
+        assertEquals("extended_protobuf.MessageD", extractAspect(test.getDatasetMCPs().get(0), "qualifiedName"));
 
         assertEquals("platform.topic", extractCustomProperty(test.getDatasetMCPs().get(0), "kafka_topic"));
 
@@ -89,26 +90,26 @@ public class ProtobufDatasetTest {
                                 .setUrl(new Url("https://slack.com/app_redirect?channel=test-slack&team=SLACK123")),
                         new InstitutionalMemoryMetadata()
                                 .setCreateStamp(TEST_AUDIT_STAMP)
-                                .setDescription("MessageA Reference 1")
+                                .setDescription("MessageD Reference 1")
                                 .setUrl(new Url("https://some/link")),
                         new InstitutionalMemoryMetadata()
                                 .setCreateStamp(TEST_AUDIT_STAMP)
-                                .setDescription("MessageA Reference 2")
+                                .setDescription("MessageD Reference 2")
                                 .setUrl(new Url("https://www.google.com/search?q=protobuf+messages")),
                         new InstitutionalMemoryMetadata()
                                 .setCreateStamp(TEST_AUDIT_STAMP)
-                                .setDescription("MessageA Reference 3")
+                                .setDescription("MessageD Reference 3")
                                 .setUrl(new Url("https://github.com/apache/kafka")),
                         new InstitutionalMemoryMetadata()
                                 .setCreateStamp(TEST_AUDIT_STAMP)
-                                .setDescription("MessageA.map_field Reference 1")
+                                .setDescription("MessageD.map_field Reference 1")
                                 .setUrl(new Url("https://developers.google.com/protocol-buffers/docs/proto3#maps")))).data(),
                 test.getDatasetMCPs().get(1).getAspect().data());
 
         assertEquals(new Status().setRemoved(false).data(), test.getDatasetMCPs().get(test.getDatasetMCPs().size() - 1).getAspect().data());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageA].[type=bytes].sequence_id")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageD].[type=bytes].sequence_id")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new BytesType())))
                         .setNativeDataType("bytes")
                         .setNullable(true)
@@ -117,10 +118,10 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(TEST_AUDIT_STAMP)),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageA].[type=bytes].sequence_id")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageD].[type=bytes].sequence_id")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageA].[type=int].position")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageD].[type=int].position")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new NumberType())))
                         .setNativeDataType("uint32")
                         .setNullable(true)
@@ -129,10 +130,10 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(TEST_AUDIT_STAMP)),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageA].[type=int].position")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageD].[type=int].position")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageA].[type=int].total")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageD].[type=int].total")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new NumberType())))
                         .setNativeDataType("uint32")
                         .setNullable(true)
@@ -141,10 +142,10 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(TEST_AUDIT_STAMP)),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageA].[type=int].total")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageD].[type=int].total")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageA].[type=array].[type=long].repeated_num")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageD].[type=array].[type=long].repeated_num")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new ArrayType().setNestedType(new StringArray()))))
                         .setNativeDataType("uint64")
                         .setNullable(true)
@@ -153,10 +154,10 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(TEST_AUDIT_STAMP)),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageA].[type=array].[type=long].repeated_num")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageD].[type=array].[type=long].repeated_num")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageA].[type=array].[type=string].repeated_str")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageD].[type=array].[type=string].repeated_str")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new ArrayType().setNestedType(new StringArray()))))
                         .setNativeDataType("string")
                         .setNullable(true)
@@ -165,15 +166,15 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(TEST_AUDIT_STAMP)),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageA].[type=array].[type=string].repeated_str")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageD].[type=array].[type=string].repeated_str")).findFirst().orElseThrow());
 
     }
 
     @Test
-    public void messageB() throws IOException {
-        ProtobufDataset test = getTestProtobufDataset("protobuf", "messageB");
+    public void messageE() throws IOException {
+        ProtobufDataset test = getTestProtobufDataset("extended_protobuf", "messageE");
 
-        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,protobuf.MessageB,TEST)",
+        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,extended_protobuf.MessageE,TEST)",
                 test.getDatasetUrn().toString());
 
         SchemaMetadata testMetadata = test.getSchemaMetadata();
@@ -182,7 +183,7 @@ public class ProtobufDatasetTest {
         assertEquals(24, testMetadata.getFields().size());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageB].[type=long].id")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageE].[type=long].id")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new NumberType())))
@@ -191,10 +192,10 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageB].[type=long].id")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageE].[type=long].id")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageB].[type=boolean].hot")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageE].[type=boolean].hot")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new BooleanType())))
@@ -203,28 +204,28 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageB].[type=boolean].hot")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageE].[type=boolean].hot")).findFirst().orElseThrow());
 
 
         assertEquals(new SchemaField()
                         .setNullable(true)
                         .setIsPartOfKey(false)
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageB].[type=string].value")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageE].[type=string].value")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new StringType())))
                         .setNativeDataType("string")
                         .setDescription("message value")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageB].[type=string].value")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageE].[type=string].value")).findFirst().orElseThrow());
     }
 
     @Test
     public void messageC() throws IOException {
-        ProtobufDataset test = getTestProtobufDataset("protobuf", "messageC");
+        ProtobufDataset test = getTestProtobufDataset("extended_protobuf", "messageC");
 
 
-        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,protobuf.MessageC,TEST)",
+        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,extended_protobuf.MessageC,TEST)",
                 test.getDatasetUrn().toString());
 
         SchemaMetadata testMetadata = test.getSchemaMetadata();
@@ -233,7 +234,7 @@ public class ProtobufDatasetTest {
         assertEquals(4, testMetadata.getFields().size());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new UnionType())))
@@ -242,40 +243,40 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
                         .setNullable(true)
                         .setIsPartOfKey(false)
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field.[type=string].one_of_string")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field.[type=string].one_of_string")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new StringType())))
                         .setNativeDataType("string")
                         .setDescription("one of string comment")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field.[type=string].one_of_string")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field.[type=string].one_of_string")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
                         .setNullable(true)
                         .setIsPartOfKey(false)
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field.[type=int].one_of_int")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field.[type=int].one_of_int")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new NumberType())))
                         .setNativeDataType("int32")
                         .setDescription("one of int comment")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC].[type=union].one_of_field.[type=int].one_of_int")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC].[type=union].one_of_field.[type=int].one_of_int")).findFirst().orElseThrow());
     }
 
     @Test
     @SuppressWarnings("LineLength")
     public void messageC2NestedOneOf() throws IOException {
-        ProtobufDataset test = getTestProtobufDataset("protobuf", "messageC2");
+        ProtobufDataset test = getTestProtobufDataset("extended_protobuf", "messageC2");
 
 
-        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,protobuf.MessageC1,TEST)",
+        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,extended_protobuf.MessageC1,TEST)",
                 test.getDatasetUrn().toString());
 
         SchemaMetadata testMetadata = test.getSchemaMetadata();
@@ -284,31 +285,31 @@ public class ProtobufDatasetTest {
         assertEquals(6, testMetadata.getFields().size());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new RecordType())))
-                        .setNativeDataType("protobuf.MessageC2")
+                        .setNativeDataType("extended_protobuf.MessageC2")
                         .setDescription("")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new ArrayType().setNestedType(new StringArray()))))
-                        .setNativeDataType("protobuf.MessageC3")
+                        .setNativeDataType("extended_protobuf.MessageC3")
                         .setDescription("")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=string].normal")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=string].normal")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new StringType())))
@@ -317,10 +318,10 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=string].normal")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=string].normal")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=union].one_of_field")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=union].one_of_field")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new UnionType())))
@@ -329,31 +330,31 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=union].one_of_field")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=union].one_of_field")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
                         .setNullable(true)
                         .setIsPartOfKey(false)
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=union].one_of_field.[type=string].one_of_string")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=union].one_of_field.[type=string].one_of_string")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new StringType())))
                         .setNativeDataType("string")
                         .setDescription("one of string comment")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=union].one_of_field.[type=string].one_of_string")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=union].one_of_field.[type=string].one_of_string")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
                         .setNullable(true)
                         .setIsPartOfKey(false)
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=union].one_of_field.[type=int].one_of_int")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=union].one_of_field.[type=int].one_of_int")
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new NumberType())))
                         .setNativeDataType("int32")
                         .setDescription("one of int comment")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageC1].[type=protobuf_MessageC2].messageList.[type=array].[type=protobuf_MessageC3].list.[type=union].one_of_field.[type=int].one_of_int")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageC1].[type=extended_protobuf_MessageC2].messageList.[type=array].[type=extended_protobuf_MessageC3].list.[type=union].one_of_field.[type=int].one_of_int")).findFirst().orElseThrow());
     }
 
     @Test
@@ -385,9 +386,9 @@ public class ProtobufDatasetTest {
 
     @Test
     public void duplicateNested() throws IOException {
-        ProtobufDataset test = getTestProtobufDataset("protobuf", "messageB");
+        ProtobufDataset test = getTestProtobufDataset("extended_protobuf", "messageE");
 
-        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,protobuf.MessageB,TEST)",
+        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,extended_protobuf.MessageE,TEST)",
                 test.getDatasetUrn().toString());
 
         SchemaMetadata testMetadata = test.getSchemaMetadata();
@@ -395,28 +396,28 @@ public class ProtobufDatasetTest {
         assertEquals(1, testMetadata.getVersion());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageB].[type=protobuf_MessageA].nested")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageE].[type=extended_protobuf_MessageD].nested")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new RecordType())))
-                        .setNativeDataType("protobuf.MessageA")
+                        .setNativeDataType("extended_protobuf.MessageD")
                         .setDescription("nested message a")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageB].[type=protobuf_MessageA].nested")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageE].[type=extended_protobuf_MessageD].nested")).findFirst().orElseThrow());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageB].[type=protobuf_MessageA].secondary_nested")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageE].[type=extended_protobuf_MessageD].secondary_nested")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new RecordType())))
-                        .setNativeDataType("protobuf.MessageA")
+                        .setNativeDataType("extended_protobuf.MessageD")
                         .setDescription("nested message a second time")
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageB].[type=protobuf_MessageA].secondary_nested")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageE].[type=extended_protobuf_MessageD].secondary_nested")).findFirst().orElseThrow());
 
         Set<String> firstNested = testMetadata.getFields().stream().map(SchemaField::getFieldPath)
                 .filter(f -> f.contains(".nested"))
@@ -431,9 +432,9 @@ public class ProtobufDatasetTest {
 
     @Test
     public void googleTimestamp() throws IOException {
-        ProtobufDataset test = getTestProtobufDataset("protobuf", "messageB");
+        ProtobufDataset test = getTestProtobufDataset("extended_protobuf", "messageE");
 
-        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,protobuf.MessageB,TEST)",
+        assertEquals("urn:li:dataset:(urn:li:dataPlatform:kafka,extended_protobuf.MessageE,TEST)",
                 test.getDatasetUrn().toString());
 
         SchemaMetadata testMetadata = test.getSchemaMetadata();
@@ -441,7 +442,7 @@ public class ProtobufDatasetTest {
         assertEquals(1, testMetadata.getVersion());
 
         assertEquals(new SchemaField()
-                        .setFieldPath("[version=2.0].[type=protobuf_MessageB].[type=long].time")
+                        .setFieldPath("[version=2.0].[type=extended_protobuf_MessageE].[type=long].time")
                         .setNullable(true)
                         .setIsPartOfKey(false)
                         .setType(new SchemaFieldDataType().setType(SchemaFieldDataType.Type.create(new NumberType())))
@@ -450,6 +451,6 @@ public class ProtobufDatasetTest {
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray()))
                         .setGlossaryTerms(new GlossaryTerms().setTerms(new GlossaryTermAssociationArray()).setAuditStamp(test.getAuditStamp())),
                 testMetadata.getFields().stream().filter(f -> f.getFieldPath()
-                        .equals("[version=2.0].[type=protobuf_MessageB].[type=long].time")).findFirst().orElseThrow());
+                        .equals("[version=2.0].[type=extended_protobuf_MessageE].[type=long].time")).findFirst().orElseThrow());
     }
 }

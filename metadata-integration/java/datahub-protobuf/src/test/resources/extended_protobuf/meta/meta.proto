@@ -64,6 +64,14 @@ message fld {
     bool product_type_bool            = 70005 [(fld.type) = TAG];
     MetaEnumExample product_type_enum = 70006 [(fld.type) = TAG];
     string tag_list                   = 70007 [(fld.type) = TAG_LIST];
+
+    string description = 70008 [(fld.type) = PROPERTY];
+  }
+}
+
+message oo {
+  extend google.protobuf.OneofOptions {
+    string description = 80001 [(fld.type) = PROPERTY];
   }
 }
 
@@ -95,5 +103,7 @@ message msg {
 
     repeated string deprecation_note = 60020 [(fld.type) = DEPRECATION, (fld.type) = PROPERTY];
     uint64 deprecation_time          = 60021 [(fld.type) = DEPRECATION, (fld.type) = PROPERTY];
+
+    string description = 60022 [(fld.type) = PROPERTY];
   }
 }

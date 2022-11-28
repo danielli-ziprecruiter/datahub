@@ -1,0 +1,16 @@
+syntax = "proto3";
+package extended_protobuf;
+import "extended_protobuf/meta/meta.proto";
+
+/*
+   Test for one of
+*/
+message MessageC {
+  // one of field comment
+  oneof one_of_field {
+    option (meta.oo.description) = "one of field comment";
+    string one_of_string = 1 [(meta.fld.description) = "one of string comment"];
+    int32 one_of_int = 2 [(meta.fld.description) = "one of int comment"];
+  }
+  string normal = 4;
+}

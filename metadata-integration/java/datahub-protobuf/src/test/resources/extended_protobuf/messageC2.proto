@@ -1,0 +1,24 @@
+syntax = "proto3";
+package extended_protobuf;
+import "extended_protobuf/meta/meta.proto";
+
+/*
+   Test for one of nested array
+*/
+message MessageC1 {
+  MessageC2 messageList = 1;
+}
+
+message MessageC2 {
+  repeated MessageC3 list = 1;
+}
+
+message MessageC3 {
+  // one of field comment
+  oneof one_of_field {
+    option (meta.oo.description) = "one of field comment";
+    string one_of_string = 1 [(meta.fld.description) = "one of string comment"];
+    int32 one_of_int = 2 [(meta.fld.description) = "one of int comment"];
+  }
+  string normal = 4;
+}

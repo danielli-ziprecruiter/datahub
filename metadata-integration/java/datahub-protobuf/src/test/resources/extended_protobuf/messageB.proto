@@ -21,17 +21,17 @@ message Person {
 
   option(meta.msg.data_steward) = "corpUser:datahub";
 
-  string name = 1 [(meta.fld.classification) = "Classification.HighlyConfidential"]; // person name
+  string name = 1 [(meta.fld.classification) = "Classification.HighlyConfidential", (meta.fld.description) = "person name"];
 
-  // unique identifier for a given person
   int32 id = 2
-  [(meta.fld.is_primary_key) = true];
+  [(meta.fld.is_primary_key) = true,
+   (meta.fld.description) = "unique identifier for a given person"];
 
-  // official email address
   string email = 3
-  [(meta.fld.classification_enum) = HighlyConfidential];
+  [(meta.fld.classification_enum) = HighlyConfidential,
+   (meta.fld.description) = "official email address"];
 
-  Department dept = 4; // department name of the person
+  Department dept = 4 [(meta.fld.description) = "department name of the person"];
 
   string test_coverage = 5
   [deprecated = true,

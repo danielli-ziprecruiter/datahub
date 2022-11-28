@@ -1,0 +1,21 @@
+syntax = "proto3";
+package extended_protobuf;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "extended_protobuf/messageD.proto";
+import "extended_protobuf/meta/meta.proto";
+
+/**
+ * This contains nested types.
+ *
+ * Owned by TeamB
+ */
+message MessageE {
+  google.protobuf.Int64Value id = 1 [(meta.fld.description) = "wrapped int64"]; //
+  string value = 2 [(meta.fld.description) = "message value"]; //
+  extended_protobuf.MessageD nested = 3 [(meta.fld.description) = "nested message a"]; //
+  google.protobuf.BoolValue hot = 6 [(meta.fld.description) = "Indicator"]; //
+  extended_protobuf.MessageD secondary_nested = 7 [(meta.fld.description) = "nested message a second time"]; //
+  google.protobuf.Timestamp time = 8 [(meta.fld.description) = "google timestamp"]; //
+}

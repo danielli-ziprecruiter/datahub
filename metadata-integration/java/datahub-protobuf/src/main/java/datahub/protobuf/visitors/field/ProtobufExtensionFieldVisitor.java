@@ -51,7 +51,7 @@ public class ProtobufExtensionFieldVisitor extends SchemaFieldVisitor {
                         .setFieldPath(context.getFieldPath(path))
                         .setNullable(!isPrimaryKey)
                         .setIsPartOfKey(isPrimaryKey)
-                        .setDescription(field.comment())
+                        .setDescription(SchemaFieldVisitor.getDescription(field))
                         .setNativeDataType(field.nativeType())
                         .setType(field.schemaFieldDataType())
                         .setGlobalTags(new GlobalTags().setTags(new TagAssociationArray(tags)))
