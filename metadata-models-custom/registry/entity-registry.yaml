@@ -1,8 +1,9 @@
-id: mycompany-dq-model
+id: ziprecruiter
 entities:
-  - name: dataset
+  - name: metric
+    keyAspect: metricKey
     aspects:
-      - customDataQualityRules
-  - name: container
-    aspects:
-      - customDataQualityRules
+      - ownership
+      - glossaryTerms
+      - globalTags
+      - institutionalMemory

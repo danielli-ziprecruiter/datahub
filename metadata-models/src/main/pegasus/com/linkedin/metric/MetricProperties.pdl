@@ -1,0 +1,61 @@
+namespace com.linkedin.metric
+
+import com.linkedin.common.Url
+import com.linkedin.common.CustomProperties
+import com.linkedin.common.ExternalReference
+import com.linkedin.common.TimeStamp
+import com.linkedin.common.Edge
+
+/**
+ * Properties associated with a Metric
+ */
+@Aspect = {
+  "name": "metricProperties"
+}
+record MetricProperties includes CustomProperties, ExternalReference {
+
+  /**
+   * Display name of the Metric
+   */
+  @Searchable = {
+    "fieldType": "WORD_GRAM",
+    "enableAutocomplete": true,
+    "boostScore": 10.0,
+    "fieldNameAliases": [ "_entityName" ]
+  }
+  name: optional string
+
+  /**
+   * Documentation of the metric
+   */
+  @Searchable = {
+    "fieldType": "TEXT",
+    "hasValuesFieldName": "hasDescription"
+  }
+  description: optional string
+
+  /**
+   * URL for the metric. This could be used as an external link on DataHub to allow users access/view the metric
+   */
+  @Searchable = {
+    "fieldType": "KEYWORD"
+  }
+  metricUrl: optional Url
+
+  /**
+   * Data sources for the metric
+   */
+  @Relationship = {
+    "/*/destinationUrn": {
+      "name": "Consumes",
+      "entityTypes": [ "dataset" ],
+      "isLineage": true,
+      "createdOn": "inputEdges/*/created/time"
+      "createdActor": "inputEdges/*/created/actor"
+      "updatedOn": "inputEdges/*/lastModified/time"
+      "updatedActor": "inputEdges/*/lastModified/actor"
+      "properties": "inputEdges/*/properties"
+    }
+  }
+  inputEdges: optional array[Edge]
+}

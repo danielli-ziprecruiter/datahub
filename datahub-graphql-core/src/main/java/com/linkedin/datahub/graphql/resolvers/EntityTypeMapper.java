@@ -15,6 +15,7 @@ public class EntityTypeMapper {
 
   static final Map<EntityType, String> ENTITY_TYPE_TO_NAME =
       ImmutableMap.<EntityType, String>builder()
+          .put(EntityType.METRIC, "metric")
           .put(EntityType.DATASET, "dataset")
           .put(EntityType.ROLE, "role")
           .put(EntityType.ASSERTION, Constants.ASSERTION_ENTITY_NAME)

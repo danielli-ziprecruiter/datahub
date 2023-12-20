@@ -1,0 +1,19 @@
+namespace com.linkedin.metadata.key
+
+/**
+ * Key for a metric
+ */
+@Aspect = {
+  "name": "metricKey",
+}
+record MetricKey {
+  /**
+  * The name of the metric.
+  */
+  @Searchable = {
+    "fieldName": "name",
+    "fieldType": "TEXT_PARTIAL",
+    "boostScore": 4.0
+  }
+  metricName: string
+}

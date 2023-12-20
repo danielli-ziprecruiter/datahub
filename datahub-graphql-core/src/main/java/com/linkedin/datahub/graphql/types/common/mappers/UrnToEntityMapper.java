@@ -28,6 +28,7 @@ import com.linkedin.datahub.graphql.generated.MLFeatureTable;
 import com.linkedin.datahub.graphql.generated.MLModel;
 import com.linkedin.datahub.graphql.generated.MLModelGroup;
 import com.linkedin.datahub.graphql.generated.MLPrimaryKey;
+import com.linkedin.datahub.graphql.generated.Metric;
 import com.linkedin.datahub.graphql.generated.Notebook;
 import com.linkedin.datahub.graphql.generated.OwnershipTypeEntity;
 import com.linkedin.datahub.graphql.generated.Role;
@@ -47,6 +48,11 @@ public class UrnToEntityMapper implements ModelMapper<com.linkedin.common.urn.Ur
   @Override
   public Entity apply(Urn input) {
     Entity partialEntity = null;
+    if (input.getEntityType().equals("metric")) {
+      partialEntity = new Metric();
+      ((Metric) partialEntity).setUrn(input.toString());
+      ((Metric) partialEntity).setType(EntityType.METRIC);
+    }
     if (input.getEntityType().equals("dataset")) {
       partialEntity = new Dataset();
       ((Dataset) partialEntity).setUrn(input.toString());

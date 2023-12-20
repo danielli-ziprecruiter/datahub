@@ -413,6 +413,14 @@ public class PoliciesConfig {
                   ImmutableList.of(EDIT_LINEAGE_PRIVILEGE, EDIT_ENTITY_EMBED_PRIVILEGE).stream())
               .collect(Collectors.toList()));
 
+  // Metric Privileges
+  public static final ResourcePrivileges METRIC_PRIVILEGES =
+     ResourcePrivileges.of(
+         "metric",
+         "Metrics",
+         "Metrics indexed by DataHub",
+         COMMON_ENTITY_PRIVILEGES);
+
   // Dashboard Privileges
   public static final ResourcePrivileges DASHBOARD_PRIVILEGES =
       ResourcePrivileges.of(

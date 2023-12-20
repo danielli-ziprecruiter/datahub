@@ -467,5 +467,15 @@ entities:
       - dataContractProperties
       - dataContractStatus
       - status
-
+  - name: metric
+    doc: A business metric
+    keyAspect: metricKey
+    aspects:
+      - ownership
+      - glossaryTerms
+      - globalTags
+      - institutionalMemory
+      - metricProperties
+      - browsePaths
+      - browsePathsV2
 events:

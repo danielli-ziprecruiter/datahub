@@ -29,10 +29,10 @@ if (project.hasProperty('projVersion')) {
 dependencies {
   implementation spec.product.pegasus.data
   // Uncomment these if you want to depend on models defined in core datahub
-  //implementation project(':li-utils')
-  //dataModel project(':li-utils')
-  //implementation project(':metadata-models')
-  //dataModel project(':metadata-models')
+  implementation project(':li-utils')
+  dataModel project(':li-utils')
+  implementation project(':metadata-models')
+  dataModel project(':metadata-models')
 
 }
 def deployBaseDir = findProperty('pluginModelsDir') ?: file(project.gradle.gradleUserHomeDir.parent + "/.datahub/plugins/models")

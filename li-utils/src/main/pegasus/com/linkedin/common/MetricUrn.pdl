@@ -1,0 +1,24 @@
+namespace com.linkedin.common
+
+/**
+ * Standardized metric identifier.
+ */
+@java.class = "com.linkedin.common.urn.MetricUrn"
+@validate.`com.linkedin.common.validator.TypedUrnValidator` = {
+  "accessible" : true,
+  "owningTeam" : "urn:li:internalTeam:datahub",
+  "entityType" : "metric",
+  "constructable" : true,
+  "namespace" : "li",
+  "name" : "Metric",
+  "doc" : "Standardized metric identifier.",
+  "owners" : [ "urn:li:corpuser:fbar", "urn:li:corpuser:bfoo" ],
+  "fields" : [ {
+    "name" : "metricName",
+    "doc" : "Metric name",
+    "type" : "string",
+    "maxLength" : 210
+  } ],
+  "maxLength" : 284
+}
+typeref MetricUrn = string

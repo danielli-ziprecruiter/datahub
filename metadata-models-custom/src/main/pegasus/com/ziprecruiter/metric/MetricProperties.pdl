@@ -1,0 +1,35 @@
+namespace com.ziprecruiter.metric
+
+import com.linkedin.common.Uri
+import com.linkedin.common.CustomProperties
+import com.linkedin.common.ExternalReference
+import com.linkedin.common.TimeStamp
+
+/**
+ * Properties associated with a metric
+ */
+@Aspect = {
+  "name": "metricProperties"
+}
+record MetricProperties includes CustomProperties, ExternalReference {
+
+  /**
+   * Display name of the metric
+   */
+  @Searchable = {
+    "fieldType": "WORD_GRAM",
+    "enableAutocomplete": true,
+    "boostScore": 10.0,
+    "fieldNameAliases": [ "_entityName" ]
+  }
+  name: optional string
+
+  /**
+   * Documentation of the metric
+   */
+  @Searchable = {
+    "fieldType": "TEXT",
+    "hasValuesFieldName": "hasDescription"
+  }
+  description: optional string
+}

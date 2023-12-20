@@ -10,6 +10,7 @@ import static com.linkedin.metadata.Constants.DATA_FLOW_ENTITY_NAME;
 import static com.linkedin.metadata.Constants.DATA_JOB_ENTITY_NAME;
 import static com.linkedin.metadata.Constants.DOMAIN_ENTITY_NAME;
 import static com.linkedin.metadata.Constants.GLOSSARY_TERM_ENTITY_NAME;
+import static com.linkedin.metadata.Constants.METRIC_ENTITY_NAME;
 import static com.linkedin.metadata.Constants.ML_FEATURE_ENTITY_NAME;
 import static com.linkedin.metadata.Constants.ML_FEATURE_TABLE_ENTITY_NAME;
 import static com.linkedin.metadata.Constants.ML_MODEL_ENTITY_NAME;
@@ -70,7 +71,8 @@ public class SearchUtils {
           EntityType.CONTAINER,
           EntityType.DOMAIN,
           EntityType.DATA_PRODUCT,
-          EntityType.NOTEBOOK);
+          EntityType.NOTEBOOK,
+          EntityType.METRIC);
 
   /** Entities that are part of autocomplete by default in Auto Complete Across Entities */
   public static final List<EntityType> AUTO_COMPLETE_ENTITY_TYPES =
@@ -90,7 +92,8 @@ public class SearchUtils {
           EntityType.CORP_GROUP,
           EntityType.ROLE,
           EntityType.NOTEBOOK,
-          EntityType.DATA_PRODUCT);
+          EntityType.DATA_PRODUCT,
+          EntityType.METRIC);
 
   /** A prioritized list of source filter types used to generate quick filters */
   public static final List<String> PRIORITIZED_SOURCE_ENTITY_TYPES =
@@ -105,7 +108,8 @@ public class SearchUtils {
               ML_MODEL_GROUP_ENTITY_NAME,
               ML_FEATURE_ENTITY_NAME,
               ML_FEATURE_TABLE_ENTITY_NAME,
-              ML_PRIMARY_KEY_ENTITY_NAME)
+              ML_PRIMARY_KEY_ENTITY_NAME,
+              METRIC_ENTITY_NAME)
           .map(String::toLowerCase)
           .collect(Collectors.toList());
 

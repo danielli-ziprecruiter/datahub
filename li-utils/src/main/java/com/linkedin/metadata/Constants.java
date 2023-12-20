@@ -73,6 +73,7 @@ public class Constants {
   public static final String QUERY_ENTITY_NAME = "query";
   public static final String DATA_PRODUCT_ENTITY_NAME = "dataProduct";
   public static final String OWNERSHIP_TYPE_ENTITY_NAME = "ownershipType";
+  public static final String METRIC_ENTITY_NAME = "metric";
 
   /** Aspects */
   // Common
@@ -205,6 +206,11 @@ public class Constants {
   public static final String ML_PRIMARY_KEY_PROPERTIES_ASPECT_NAME = "mlPrimaryKeyProperties";
   public static final String ML_PRIMARY_KEY_EDITABLE_PROPERTIES_ASPECT_NAME =
       "editableMlPrimaryKeyProperties";
+
+  // METRIC
+  public static final String METRIC_KEY_ASPECT_NAME = "metricKey";
+  public static final String METRIC_PROPERTIES_ASPECT_NAME = "metricProperties";
+  public static final String EDITABLE_METRIC_PROPERTIES_ASPECT_NAME = "editableMetricProperties";
 
   // Policy
   public static final String DATAHUB_POLICY_INFO_ASPECT_NAME = "dataHubPolicyInfo";

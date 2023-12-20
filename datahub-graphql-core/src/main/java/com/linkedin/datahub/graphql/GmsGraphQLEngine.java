@@ -290,6 +290,7 @@ import com.linkedin.datahub.graphql.types.dataset.mappers.DatasetProfileMapper;
 import com.linkedin.datahub.graphql.types.domain.DomainType;
 import com.linkedin.datahub.graphql.types.glossary.GlossaryNodeType;
 import com.linkedin.datahub.graphql.types.glossary.GlossaryTermType;
+import com.linkedin.datahub.graphql.types.metric.MetricType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLFeatureTableType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLFeatureType;
 import com.linkedin.datahub.graphql.types.mlmodel.MLModelGroupType;
@@ -438,6 +439,7 @@ public class GmsGraphQLEngine {
   private final QueryType queryType;
   private final DataProductType dataProductType;
   private final OwnershipType ownershipType;
+  private final MetricType metricType;
 
   /** A list of GraphQL Plugins that extend the core engine */
   private final List<GmsGraphQLPlugin> graphQLPlugins;
@@ -537,6 +539,7 @@ public class GmsGraphQLEngine {
     this.queryType = new QueryType(entityClient);
     this.dataProductType = new DataProductType(entityClient);
     this.ownershipType = new OwnershipType(entityClient);
+    this.metricType = new MetricType(entityClient);
 
     // Init Lists
     this.entityTypes =
@@ -572,7 +575,8 @@ public class GmsGraphQLEngine {
             dataHubViewType,
             queryType,
             dataProductType,
-            ownershipType);
+            ownershipType,
+            metricType);
     this.loadableTypes = new ArrayList<>(entityTypes);
     // Extend loadable types with types from the plugins
     // This allows us to offer search and browse capabilities out of the box for those types
@@ -657,6 +661,7 @@ public class GmsGraphQLEngine {
     configureQueryEntityResolvers(builder);
     configureOwnershipTypeResolver(builder);
     configurePluginResolvers(builder);
+    configureMetricResolvers(builder);
   }
 
   private void configureOrganisationRoleResolvers(RuntimeWiring.Builder builder) {
@@ -865,6 +870,7 @@ public class GmsGraphQLEngine {
                 .dataFetcher("tag", getResolver(tagType))
                 .dataFetcher("dataFlow", getResolver(dataFlowType))
                 .dataFetcher("dataJob", getResolver(dataJobType))
+                .dataFetcher("metric", getResolver(metricType))
                 .dataFetcher("glossaryTerm", getResolver(glossaryTermType))
                 .dataFetcher("glossaryNode", getResolver(glossaryNodeType))
                 .dataFetcher("domain", getResolver((domainType)))
@@ -994,6 +1000,7 @@ public class GmsGraphQLEngine {
                 .dataFetcher("updateDataFlow", new MutableTypeResolver<>(dataFlowType))
                 .dataFetcher("updateCorpUserProperties", new MutableTypeResolver<>(corpUserType))
                 .dataFetcher("updateCorpGroupProperties", new MutableTypeResolver<>(corpGroupType))
+                .dataFetcher("updateMetric", new MutableTypeResolver<>(metricType))
                 .dataFetcher("addTag", new AddTagResolver(entityService))
                 .dataFetcher("addTags", new AddTagsResolver(entityService))
                 .dataFetcher("batchAddTags", new BatchAddTagsResolver(entityService))
@@ -2434,5 +2441,16 @@ public class GmsGraphQLEngine {
                               ? ingestionSource.getPlatform().getUrn()
                               : null;
                         })));
+  }
+
+  private void configureMetricResolvers(final RuntimeWiring.Builder builder) {
+    builder.type(
+        "Metric",
+        typeWiring ->
+            typeWiring
+                .dataFetcher("relationships", new EntityRelationshipsResultResolver(graphClient))
+                .dataFetcher("browsePaths", new EntityBrowsePathsResolver(this.chartType))
+                .dataFetcher("lineage", new EntityLineageResultResolver(siblingGraphService))
+                .dataFetcher("exists", new EntityExistsResolver(entityService)));
   }
 }

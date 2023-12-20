@@ -15,6 +15,11 @@ Coming soon listEntity queries for listing all entities of a given type
 """
 type Query {
     """
+    Fetch a Metric by primary key (urn)
+    """
+    metric(urn: String!): Metric
+
+    """
     Fetch a Data Platform by primary key (urn)
     """
     dataPlatform(urn: String!): DataPlatform
@@ -272,6 +277,11 @@ type Mutation {
     Update the metadata about a particular Data Job (Task)
     """
     updateDataJob(urn: String!, input: DataJobUpdateInput!): DataJob
+
+    """
+    Update the metadata about a particular Metric
+    """
+    updateMetric(urn: String!, input: MetricUpdateInput!): Metric
 
     """
     Create a new tag. Requires the 'Manage Tags' or 'Create Tags' Platform Privilege. If a Tag with the provided ID already exists,
@@ -905,6 +915,11 @@ enum EntityType {
     A Role from an organisation
     """
     ROLE
+
+    """"
+    A metric from an organisation
+    """
+    METRIC
 }
 
 """
@@ -11235,4 +11250,136 @@ input UpdateOwnershipTypeInput {
     The description of the Custom Ownership Type
     """
     description: String
+}
+
+"""
+A metric
+"""
+type Metric implements EntityWithRelationships & Entity & BrowsableEntity {
+    """
+    The primary key of the Dataset
+    """
+    urn: String!
+
+    """
+    The standard Entity Type
+    """
+    type: EntityType!
+
+    """
+    Ownership metadata of the dataset
+    """
+    ownership: Ownership
+
+    """
+    References to internal resources related to the dataset
+    """
+    institutionalMemory: InstitutionalMemory
+
+    """
+    Tags used for searching dataset
+    """
+    tags: GlobalTags
+
+    """
+    The structured glossary terms associated with the dataset
+    """
+    glossaryTerms: GlossaryTerms
+
+    """
+    Edges extending from this entity grouped by direction in the lineage graph
+    """
+    lineage(input: LineageInput!): EntityLineageResult
+
+    """
+    The browse paths corresponding to the metric. If no Browse Paths have been generated before, this will be null.
+    """
+    browsePaths: [BrowsePath!]
+
+    """
+    The browse path V2 corresponding to an entity. If no Browse Paths V2 have been generated before, this will be null.
+    """
+    browsePathV2: BrowsePathV2
+
+    """
+    Whether or not this entity exists on DataHub
+    """
+    exists: Boolean
+
+    properties: MetricProperties
+
+    """
+    An additional set of of read write properties
+    """
+    editableProperties: MetricEditableProperties
+
+    """
+    Granular API for querying edges extending from this entity
+    """
+    relationships(input: RelationshipsInput!): EntityRelationshipsResult
+}
+
+input MetricUpdateInput {
+    """
+    Update to ownership
+    """
+    ownership: OwnershipUpdate
+
+    """
+    Update to institutional memory, ie documentation
+    """
+    institutionalMemory: InstitutionalMemoryUpdate
+
+    """
+    Update to tags
+    """
+    tags: GlobalTagsUpdate
+
+    """
+    Update to editable properties
+    """
+    editableProperties: MetricEditablePropertiesUpdate
+}
+
+"""
+Additional read only properties about a Metric
+"""
+type MetricProperties {
+
+    """
+    The name of the metric used in display
+    """
+    name: String!
+
+    """
+    Read only technical description for metric
+    """
+    description: String
+
+    """
+    External URL associated with the Metric
+    """
+    externalUrl: String
+
+    """
+    Custom properties of the metric
+    """
+    customProperties: [CustomPropertiesEntry!]
+}
+
+type MetricEditableProperties {
+    """
+    The edited description
+    """
+    description: String
+}
+
+"""
+Update to writable Metric fields
+"""
+input MetricEditablePropertiesUpdate {
+    """
+    Writable description aka documentation for a Metric
+    """
+    description: String!
 }
