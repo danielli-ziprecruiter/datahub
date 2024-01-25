@@ -119,6 +119,15 @@ export function HeaderLinks(props: Props) {
                                 <NavTitleDescription>Manage related groups of data assets</NavTitleDescription>
                             </Link>
                         </MenuItem>
+                        <MenuItem key="2">
+                            <Link to="/glossaryNode/urn:li:glossaryNode:f4ad18cbb919225888e18cc2dbd6435c">
+                                <NavTitleContainer>
+                                    <BookOutlined style={{ fontSize: '14px', fontWeight: 'bold' }} />
+                                    <NavTitleText>Metrics</NavTitleText>
+                                </NavTitleContainer>
+                                <NavTitleDescription>View metrics</NavTitleDescription>
+                            </Link>
+                        </MenuItem>
                     </Menu>
                 }
             >
